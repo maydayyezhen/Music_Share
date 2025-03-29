@@ -26,5 +26,9 @@ public class SongController {
     public void deleteSong(@PathVariable Integer id) {
         songRepository.deleteById(id);
     }
+    @PostMapping
+    public Song addSong(@RequestBody Song song) {
+        return songRepository.save(song);
+    }
 
 }
