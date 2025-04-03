@@ -1,0 +1,44 @@
+package org.javaclimb.springbootmusic.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "artists")
+@AllArgsConstructor
+@NoArgsConstructor
+public class Artist {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String name;
+    private String bio;
+    private String avatarFilename;
+
+    // getters and setters
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getBio() {
+        return bio;
+    }
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+    public String getAvatarFilename() {
+        return avatarFilename;
+    }
+    public void setAvatarFilename(String avatarUrl) {
+        this.avatarFilename = avatarUrl;
+    }
+}

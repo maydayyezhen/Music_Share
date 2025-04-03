@@ -4,26 +4,21 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-
 @Entity
-@Table(name = "songs")
-@NoArgsConstructor
+@Table(name = "albums")
 @AllArgsConstructor
-public class Song {
+@NoArgsConstructor
+public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String title;
-    @ManyToOne
-    @JoinColumn(name = "album_id", referencedColumnName = "id")
-    private Album album;
     @ManyToOne
     @JoinColumn(name = "artist_id", referencedColumnName = "id")
     private Artist artist;
-    private Integer duration;
-    private String audioFilename;
-    private String lyrics;
+    private String coverFilename;
+    private String description;
+    private String releaseDate;
 
 // getters and setters
     public Integer getId() {
@@ -38,34 +33,29 @@ public class Song {
     public void setTitle(String title) {
         this.title = title;
     }
-    public Album getAlbum() {
-        return album;
-    }
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
     public Artist getArtist() {
         return artist;
     }
     public void setArtist(Artist artist) {
         this.artist = artist;
     }
-    public Integer getDuration() {
-        return duration;
+    public String getCoverFilename() {
+        return coverFilename;
     }
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    public void setCoverFilename(String coverUrl) {
+        this.coverFilename = coverUrl;
     }
-    public String getAudioFilename() {
-        return audioFilename;
+    public String getDescription() {
+        return description;
     }
-    public void setAudioFilename(String fileUrl) {
-        this.audioFilename = fileUrl;
+    public void setDescription(String description) {
+        this.description = description;
     }
-    public String getLyrics() {
-        return lyrics;
+    public String getReleaseDate() {
+        return releaseDate;
     }
-    public void setLyrics(String lyrics) {
-        this.lyrics = lyrics;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 }
+

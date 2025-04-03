@@ -1,7 +1,7 @@
 package org.javaclimb.springbootmusic.controller;
 import org.javaclimb.springbootmusic.model.User;
+import org.javaclimb.springbootmusic.service.UserService;
 import org.springframework.web.bind.annotation.*;
-import org.javaclimb.springbootmusic.repository.UserRepository;
 
 import java.util.List;
 
@@ -9,25 +9,26 @@ import java.util.List;
 @RequestMapping("/users")
 @CrossOrigin("*")
 public class UserController {
-    private final UserRepository userRepository;
+     private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
-     @GetMapping
+
+    @GetMapping
      public List<User> getAllUsers() {
-         return userRepository.findAll();
+         return userService.getAllUsers();
     }
     @GetMapping("/{username}")
     public User getUserByUsername(@PathVariable String username) {
-        return userRepository.findByUsername(username);
+        return userService.getUserByUsername(username);
     }
      @PostMapping
      public User createUser(@RequestBody User user) {
-         return userRepository.save(user);
+         return userService.createUser(user);
      }
      @DeleteMapping("/{id}")
-     public void deleteUser(@PathVariable int id) {
-         userRepository.deleteById(id);
+     public void deleteUserById(@PathVariable int id) {
+         userService.deleteUserById(id);
      }
 }
