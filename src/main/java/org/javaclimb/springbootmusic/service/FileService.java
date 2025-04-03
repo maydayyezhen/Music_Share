@@ -17,7 +17,7 @@ import java.util.Objects;
 @Service
 public class FileService {
     public static String uploadFile(MultipartFile file, Path uploadDir) {
-        String fileName = "";
+        String fileName;
         if (!Files.exists(uploadDir)) {
             try {
                 Files.createDirectories(uploadDir);

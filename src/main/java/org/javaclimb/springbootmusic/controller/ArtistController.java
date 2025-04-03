@@ -1,17 +1,12 @@
 package org.javaclimb.springbootmusic.controller;
 
 import org.javaclimb.springbootmusic.model.Artist;
-import org.javaclimb.springbootmusic.repository.ArtistRepository;
 import org.javaclimb.springbootmusic.service.ArtistService;
-import org.javaclimb.springbootmusic.service.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
