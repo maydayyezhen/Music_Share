@@ -36,6 +36,11 @@ public class SongController {
         return songService.getCoverBySongId(id);
     }
 
+    @GetMapping("/album/{albumId}")
+    public List<Song> getSongsByAlbumId(@PathVariable Integer albumId) {
+        return songService.getSongsByAlbumId(albumId);
+    }
+
     @PostMapping
     public Song addSong(@RequestBody Song song) {return songService.addSong(song);}
     //歌曲上传

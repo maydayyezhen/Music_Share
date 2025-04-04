@@ -21,8 +21,13 @@ public class SongService {
     }
 
     public  List<Song> getAllSongs() {return songRepository.findAll();}
+
     public List<Song> getSongsByArtistId(Integer id) {
         return songRepository.findByArtistId(id);
+    }
+
+    public List<Song> getSongsByAlbumId(Integer albumId) {
+        return songRepository.findByAlbumId(albumId);
     }
 
     public ResponseEntity<Resource> getAudioFileById(Integer id) {
