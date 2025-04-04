@@ -22,6 +22,11 @@ public class SongController {
     public List<Song> getAllSongs() {
         return songService.getAllSongs();
     }
+    //根据歌手ID获取歌曲
+    @GetMapping("/artist/{artistId}")
+    public List<Song> getSongsByArtistId(@PathVariable Integer artistId) {
+        return songService.getSongsByArtistId(artistId);
+    }
     @GetMapping("/{id}/audioFile")
     public ResponseEntity<Resource> getAudioFileById(@PathVariable Integer id){
         return songService.getAudioFileById(id);

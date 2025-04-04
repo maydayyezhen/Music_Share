@@ -24,9 +24,12 @@ public class ArtistService {
         return artistRepository.findAll();
     }
 
+    public Artist getArtistById(Integer id) {
+        return artistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("歌手未找到: " + id));
+    }
+
     public ResponseEntity<Resource> getAvatarFileById(Integer id){
-        Artist artist = artistRepository.findById(id).
-                orElseThrow(() -> new EntityNotFoundException("歌手未找到: " + id));
+        Artist artist = getArtistById(id);
         String fileName = artist.getAvatarFilename();
         Path storageDir = Paths.get("artists/avatar");
         return FileService.getFile(fileName,storageDir);
@@ -44,8 +47,7 @@ public class ArtistService {
 
 
     public ResponseEntity<String> deleteAvatarFileById(Integer id) {
-        Artist artist = artistRepository.findById(id).
-                orElseThrow(() -> new EntityNotFoundException("歌手未找到: " + id));
+        Artist artist = getArtistById(id);
         String fileName = artist.getAvatarFilename();
         Path storageDir = Paths.get("artists/avatar");
         return FileService.deleteFile(fileName, storageDir);

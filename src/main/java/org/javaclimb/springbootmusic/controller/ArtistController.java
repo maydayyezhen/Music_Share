@@ -23,6 +23,10 @@ public class ArtistController {
     public List<Artist> getAllArtists() {
         return artistService.getAllArtists();
     }
+    @GetMapping("/{id}")
+    public Artist getArtistById(@PathVariable Integer id) {
+        return artistService.getArtistById(id);
+    }
     @GetMapping("/{id}/avatarFile")
     public ResponseEntity<Resource> getAvatarFileById(@PathVariable Integer id){
         return artistService.getAvatarFileById(id);
