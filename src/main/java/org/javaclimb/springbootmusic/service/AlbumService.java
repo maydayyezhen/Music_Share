@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static org.javaclimb.springbootmusic.service.FileService.uploadFile;
 
@@ -26,14 +25,15 @@ public class AlbumService {
         return albumRepository.findAll();
     }
 
-    public Optional<Album> getAlbumById(Integer id) {
-        return albumRepository.findById(id);
+    public Album getAlbumById(Integer id) {
+        return albumRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("专辑未找到: " + id));
     }
+
     public List<Album> getAlbumsByArtistId(Integer artistId) {
         return albumRepository.findByArtistId(artistId);
     }
     public ResponseEntity<Resource> getCoverFileById(Integer id){
-        Album album = getAlbumById(id).orElseThrow(() -> new EntityNotFoundException("Album not found"));
+        Album album = getAlbumById(id);
         String fileName = album.getCoverFilename();
         Path storageDir = Paths.get("albums/cover");
         return FileService.getFile(fileName,storageDir);
@@ -51,7 +51,7 @@ public class AlbumService {
 
 
     public ResponseEntity<String> deleteCoverFileById(Integer id) {
-        Album album = getAlbumById(id).orElseThrow(() -> new EntityNotFoundException("Album not found"));
+        Album album = getAlbumById(id);
         String fileName = album.getCoverFilename();
         Path storageDir = Paths.get("albums/cover");
         return FileService.deleteFile(fileName, storageDir);

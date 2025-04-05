@@ -42,6 +42,7 @@ public class FileService {
     public static ResponseEntity<Resource> getFile(String fileName, Path storageDir){
         try {
 
+
             Path filePath = storageDir.resolve(fileName).normalize();
 
             if (!Files.exists(filePath)) {
@@ -52,7 +53,7 @@ public class FileService {
             if (mimeType == null) {
                 mimeType = "application/octet-stream";
             }
-
+            System.out.println("📥 文件获取: " + fileName);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(mimeType))
                     .body(new FileSystemResource(filePath));

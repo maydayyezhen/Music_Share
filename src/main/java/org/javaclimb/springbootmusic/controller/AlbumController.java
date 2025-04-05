@@ -26,10 +26,18 @@ public class AlbumController {
     public List<Album> getAlbumsByArtistId(@PathVariable Integer artistId) {
         return albumService.getAlbumsByArtistId(artistId);
     }
+
+    @GetMapping("/{id}")
+    public Album getAlbumsByAlbumId(@PathVariable Integer id) {
+        return albumService.getAlbumById(id);
+    }
+
     @GetMapping("/{id}/coverFile")
     public ResponseEntity<Resource> getCoverFileById(@PathVariable Integer id){
         return albumService.getCoverFileById(id);
     }
+
+
 
 
     @PostMapping

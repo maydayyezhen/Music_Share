@@ -22,18 +22,36 @@ public class SongController {
     public List<Song> getAllSongs() {
         return songService.getAllSongs();
     }
+
+    @GetMapping("/{id}")
+    public Song getSongById(@PathVariable Integer id) {
+        return songService.getSongById(id);
+    }
+
     //根据歌手ID获取歌曲
     @GetMapping("/artist/{artistId}")
     public List<Song> getSongsByArtistId(@PathVariable Integer artistId) {
         return songService.getSongsByArtistId(artistId);
     }
+
     @GetMapping("/{id}/audioFile")
     public ResponseEntity<Resource> getAudioFileById(@PathVariable Integer id){
         return songService.getAudioFileById(id);
     }
+
+    @GetMapping("/{id}/lrcFile")
+    public ResponseEntity<Resource> getLrcFileById(@PathVariable Integer id){
+        return songService.getLrcFileById(id);
+    }
+
     @GetMapping("/{id}/coverFile")
     public ResponseEntity<Resource> getCoverBySongId(@PathVariable Integer id){
         return songService.getCoverBySongId(id);
+    }
+
+    @GetMapping("/album/{albumId}")
+    public List<Song> getSongsByAlbumId(@PathVariable Integer albumId) {
+        return songService.getSongsByAlbumId(albumId);
     }
 
     @PostMapping
@@ -42,6 +60,11 @@ public class SongController {
     @PostMapping("/audioFile")
     public String uploadAudioFile(@RequestParam("audioFile") MultipartFile audioFile) {
         return songService.uploadAudioFile(audioFile);
+    }
+    //歌词上传
+    @PostMapping("/lrcFile")
+    public String uploadLrcFile(@RequestParam("lrcFile") MultipartFile lrcFile) {
+        return songService.uploadLrcFile(lrcFile);
     }
 
     @PutMapping
@@ -58,6 +81,9 @@ public class SongController {
     public ResponseEntity<String> deleteAudioFileById(@PathVariable("id") Integer id) {
         return songService.deleteAudioFileById(id);
     }
-
+    @DeleteMapping("/{id}/lrcFile")
+    public ResponseEntity<String> deleteLrcFileById(@PathVariable("id") Integer id) {
+        return songService.deleteLrcFileById(id);
+    }
 
 }

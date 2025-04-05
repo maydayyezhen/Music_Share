@@ -21,22 +21,35 @@ public class SongService {
     }
 
     public  List<Song> getAllSongs() {return songRepository.findAll();}
+
+    public Song getSongById(Integer id) {
+        return songRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("歌曲未找到: " + id));
+    }
+
     public List<Song> getSongsByArtistId(Integer id) {
         return songRepository.findByArtistId(id);
     }
 
+    public List<Song> getSongsByAlbumId(Integer albumId) {
+        return songRepository.findByAlbumId(albumId);
+    }
+
     public ResponseEntity<Resource> getAudioFileById(Integer id) {
-        Song song = songRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("歌曲未找到: " + id));
+        Song song = getSongById(id);
         String fileName = song.getAudioFilename();
         Path storageDir = Paths.get("songs/audio");
         return FileService.getFile(fileName, storageDir);
     }
 
-    public ResponseEntity<Resource> getCoverBySongId(Integer id) {
-        Song song = songRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("歌曲未找到: " + id));
+    public ResponseEntity<Resource> getLrcFileById(Integer id) {
+        Song song = getSongById(id);
+        String fileName = song.getLrcFilename();
+        Path storageDir = Paths.get("songs/lrc");
+        return FileService.getFile(fileName, storageDir);
+    }
 
+    public ResponseEntity<Resource> getCoverBySongId(Integer id) {
+        Song song = getSongById(id);
         Album album = song.getAlbum();
         if (album == null || album.getCoverFilename() == null) {
             throw new EntityNotFoundException("专辑封面不存在");
@@ -55,6 +68,11 @@ public class SongService {
         return FileService.uploadFile(audioFile, uploadDir);
     }
 
+    public String uploadLrcFile(MultipartFile lrcFile) {
+        Path uploadDir = Paths.get("songs/lrc");
+        return FileService.uploadFile(lrcFile, uploadDir);
+    }
+
     public Song updateSong(Song song) {
         return songRepository.save(song);
     }
@@ -64,10 +82,15 @@ public class SongService {
     }
 
     public ResponseEntity<String> deleteAudioFileById(Integer id) {
-        Song song = songRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("歌曲未找到: " + id));
+        Song song = getSongById(id);
         String fileName = song.getAudioFilename();
         Path storageDir = Paths.get("songs/audio");
+        return  FileService.deleteFile(fileName, storageDir);
+    }
+    public ResponseEntity<String> deleteLrcFileById(Integer id) {
+        Song song = getSongById(id);
+        String fileName = song.getLrcFilename();
+        Path storageDir = Paths.get("songs/lrc");
         return  FileService.deleteFile(fileName, storageDir);
     }
 }

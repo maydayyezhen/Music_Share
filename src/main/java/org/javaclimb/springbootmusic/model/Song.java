@@ -23,6 +23,7 @@ public class Song {
     private Artist artist;
     private Integer duration;
     private String audioFilename;
+    private String lrcFilename;
     private String lyrics;
 
 // getters and setters
@@ -61,6 +62,12 @@ public class Song {
     }
     public void setAudioFilename(String fileUrl) {
         this.audioFilename = fileUrl;
+    }
+    public String getLrcFilename() {
+        return lrcFilename;
+    }
+    public void setLrcFilename(String lrcFilename) {
+        this.lrcFilename = lrcFilename;
     }
     public String getLyrics() {
         return lyrics;
