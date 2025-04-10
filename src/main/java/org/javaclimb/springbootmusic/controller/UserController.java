@@ -24,8 +24,8 @@ public class UserController {
          return userService.getAllUsers();
     }
     @GetMapping("/{username}")
-    public User getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username);
+    public User getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id);
     }
      @PostMapping
      public User createUser(@RequestBody User user) {
@@ -36,15 +36,21 @@ public class UserController {
          userService.deleteUserById(id);
      }
     @PutMapping("/{id}/password")
-    public void updatePassword(
+    public User updatePassword(
             @PathVariable Integer id,
             @RequestParam String oldPassword,
             @RequestParam String newPassword) {
-        userService.updatePassword(id, oldPassword, newPassword);
+        return userService.updatePassword(id, oldPassword, newPassword);
+    }
+    @PutMapping("/{id}")
+    public User updateUser(
+            @PathVariable Integer id,
+            @RequestParam String nickname) {
+           return userService.updateUser(id, nickname);
     }
     @GetMapping("/{id}/avatarFile")
-    public ResponseEntity<Resource> getAvatarFileById(@PathVariable String name){
-        return userService.getAvatarFileByName(name);
+    public ResponseEntity<Resource> getAvatarFileById(@PathVariable Integer id){
+        return userService.getAvatarFileByName(id);
     }
 
     @PostMapping("/avatarFile")
@@ -54,7 +60,7 @@ public class UserController {
 
 
     @DeleteMapping("/{id}/avatarFile")
-    public ResponseEntity<String> deleteAvatarFileById(@PathVariable("id") String name) {
-        return userService.deleteAvatarFileById(name);
+    public ResponseEntity<String> deleteAvatarFileById(@PathVariable("id") Integer id) {
+        return userService.deleteAvatarFileById(id);
     }
 }
