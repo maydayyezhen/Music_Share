@@ -2,15 +2,15 @@ package org.javaclimb.springbootmusic.service;
 
 import org.javaclimb.springbootmusic.model.User;
 import org.javaclimb.springbootmusic.repository.UserRepository;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 public class UserService {
@@ -50,9 +50,25 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // 上传头像
+    public ResponseEntity<Resource> getAvatarFileByName(String name){
+        User user = getUserByUsername(name);
+        String fileName = user.getAvatarUrl();
+        Path storageDir = Paths.get("users/avatar");
+        return FileService.getFile(fileName,storageDir);
+    }
+
+
     public String uploadAvatarFile(MultipartFile avatarFile) {
         Path uploadDir = Paths.get("users/avatar");
         return FileService.uploadFile(avatarFile, uploadDir);
     }
+
+
+    public ResponseEntity<String> deleteAvatarFileById(String name) {
+        User user = getUserByUsername(name);
+        String fileName = user.getAvatarUrl();
+        Path storageDir = Paths.get("users/avatar");
+        return FileService.deleteFile(fileName, storageDir);
+    }
 }
+
