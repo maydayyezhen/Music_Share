@@ -16,8 +16,11 @@ public class User {
     private String password;
     private String nickname;
     private String role;
+    private String avatarUrl;
 
 
+    public String getAvatarUrl() {return avatarUrl;}
+    public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl;}
     public Integer getId() {
         return id;
     }
@@ -49,4 +52,3 @@ public class User {
         this.role = role;
     }
 }
-
