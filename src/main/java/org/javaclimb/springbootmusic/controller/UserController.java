@@ -1,6 +1,9 @@
 package org.javaclimb.springbootmusic.controller;
+import org.javaclimb.springbootmusic.model.Artist;
 import org.javaclimb.springbootmusic.model.User;
 import org.javaclimb.springbootmusic.service.UserService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,10 +42,19 @@ public class UserController {
             @RequestParam String newPassword) {
         userService.updatePassword(id, oldPassword, newPassword);
     }
-    @PostMapping("/{id}/avatar")
-    public void uploadAvatar(
-            @PathVariable Integer id,
-            @RequestParam("file") MultipartFile file) {
-        userService.uploadAvatar(id, file);
+    @GetMapping("/{id}/avatarFile")
+    public ResponseEntity<Resource> getAvatarFileById(@PathVariable String name){
+        return userService.getAvatarFileByName(name);
+    }
+
+    @PostMapping("/avatarFile")
+    public String uploadAvatarFile(@RequestParam("avatarFile") MultipartFile avatarFile) {
+        return userService.uploadAvatarFile(avatarFile);
+    }
+
+
+    @DeleteMapping("/{id}/avatarFile")
+    public ResponseEntity<String> deleteAvatarFileById(@PathVariable("id") String name) {
+        return userService.deleteAvatarFileById(name);
     }
 }
