@@ -16,7 +16,7 @@ public class Album {
     @ManyToOne
     @JoinColumn(name = "artist_id", referencedColumnName = "id")
     private Artist artist;
-    private String coverFilename;
+    private String coverUrl;
     private String description;
     private String releaseDate;
 
@@ -39,11 +39,11 @@ public class Album {
     public void setArtist(Artist artist) {
         this.artist = artist;
     }
-    public String getCoverFilename() {
-        return coverFilename;
+    public String getCoverUrl() {
+        return coverUrl;
     }
-    public void setCoverFilename(String coverUrl) {
-        this.coverFilename = coverUrl;
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
     public String getDescription() {
         return description;

@@ -1,7 +1,6 @@
 package org.javaclimb.springbootmusic.controller;
 import org.javaclimb.springbootmusic.model.Song;
 import org.javaclimb.springbootmusic.service.SongService;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,19 +33,9 @@ public class SongController {
         return songService.getSongsByArtistId(artistId);
     }
 
-    @GetMapping("/{id}/audioFile")
-    public ResponseEntity<Resource> getAudioFileById(@PathVariable Integer id){
-        return songService.getAudioFileById(id);
-    }
-
-    @GetMapping("/{id}/lrcFile")
-    public ResponseEntity<Resource> getLrcFileById(@PathVariable Integer id){
-        return songService.getLrcFileById(id);
-    }
-
-    @GetMapping("/{id}/coverFile")
-    public ResponseEntity<Resource> getCoverBySongId(@PathVariable Integer id){
-        return songService.getCoverBySongId(id);
+    @GetMapping("/{id}/coverUrl")
+    public String getCoverUrlBySongId(@PathVariable Integer id){
+        return songService.getCoverUrlBySongId(id);
     }
 
     @GetMapping("/album/{albumId}")
@@ -57,14 +46,14 @@ public class SongController {
     @PostMapping
     public Song addSong(@RequestBody Song song) {return songService.addSong(song);}
     //歌曲上传
-    @PostMapping("/audioFile")
-    public String uploadAudioFile(@RequestParam("audioFile") MultipartFile audioFile) {
-        return songService.uploadAudioFile(audioFile);
+    @PostMapping("/{id}/audioFile")
+    public ResponseEntity<Void> uploadAudioFile(@PathVariable Integer id, @RequestParam("audioFile") MultipartFile audioFile) {
+        return songService.uploadAudioFile(id,audioFile);
     }
     //歌词上传
-    @PostMapping("/lrcFile")
-    public String uploadLrcFile(@RequestParam("lrcFile") MultipartFile lrcFile) {
-        return songService.uploadLrcFile(lrcFile);
+    @PostMapping("/{id}/lrcFile")
+    public ResponseEntity<Void> uploadLrcFile(@PathVariable Integer id, @RequestParam("lrcFile") MultipartFile lrcFile) {
+        return songService.uploadLrcFile(id,lrcFile);
     }
 
     @PutMapping

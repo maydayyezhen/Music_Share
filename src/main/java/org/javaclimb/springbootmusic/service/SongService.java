@@ -4,14 +4,14 @@ import jakarta.persistence.EntityNotFoundException;
 import org.javaclimb.springbootmusic.model.Album;
 import org.javaclimb.springbootmusic.model.Song;
 import org.javaclimb.springbootmusic.repository.SongRepository;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+
+import static org.javaclimb.springbootmusic.constants.FilePaths.SONG_AUDIO_PATH;
+import static org.javaclimb.springbootmusic.constants.FilePaths.SONG_LYRIC_PATH;
+import static org.javaclimb.springbootmusic.service.FileService.uploadFile;
 
 @Service
 public class SongService {
@@ -34,43 +34,31 @@ public class SongService {
         return songRepository.findByAlbumId(albumId);
     }
 
-    public ResponseEntity<Resource> getAudioFileById(Integer id) {
-        Song song = getSongById(id);
-        String fileName = song.getAudioFilename();
-        Path storageDir = Paths.get("songs/audio");
-        return FileService.getFile(fileName, storageDir);
-    }
-
-    public ResponseEntity<Resource> getLrcFileById(Integer id) {
-        Song song = getSongById(id);
-        String fileName = song.getLrcFilename();
-        Path storageDir = Paths.get("songs/lrc");
-        return FileService.getFile(fileName, storageDir);
-    }
-
-    public ResponseEntity<Resource> getCoverBySongId(Integer id) {
+    public String getCoverUrlBySongId(Integer id) {
         Song song = getSongById(id);
         Album album = song.getAlbum();
-        if (album == null || album.getCoverFilename() == null) {
+        if (album == null || album.getCoverUrl() == null) {
             throw new EntityNotFoundException("专辑封面不存在");
         }
-        String fileName = album.getCoverFilename();
-        Path storageDir = Paths.get("albums/cover");
-        return FileService.getFile(fileName, storageDir);
+        return album.getCoverUrl();
     }
 
     public Song addSong(Song song) {
         return songRepository.save(song);
     }
 
-    public String uploadAudioFile(MultipartFile audioFile) {
-        Path uploadDir = Paths.get("songs/audio");
-        return FileService.uploadFile(audioFile, uploadDir);
+    public ResponseEntity<Void> uploadAudioFile(Integer id ,MultipartFile audioFile) {
+        Song song = getSongById(id);
+        song.setAudioUrl(uploadFile(audioFile, SONG_AUDIO_PATH));
+        songRepository.save(song);
+        return ResponseEntity.ok().build();
     }
 
-    public String uploadLrcFile(MultipartFile lrcFile) {
-        Path uploadDir = Paths.get("songs/lrc");
-        return FileService.uploadFile(lrcFile, uploadDir);
+    public ResponseEntity<Void> uploadLrcFile(Integer id, MultipartFile lrcFile) {
+        Song song = getSongById(id);
+        song.setLyricUrl(uploadFile(lrcFile, SONG_LYRIC_PATH));
+        songRepository.save(song);
+        return ResponseEntity.ok().build();
     }
 
     public Song updateSong(Song song) {
@@ -83,14 +71,12 @@ public class SongService {
 
     public ResponseEntity<String> deleteAudioFileById(Integer id) {
         Song song = getSongById(id);
-        String fileName = song.getAudioFilename();
-        Path storageDir = Paths.get("songs/audio");
-        return  FileService.deleteFile(fileName, storageDir);
+        String fileUrl = song.getAudioUrl();
+        return  FileService.deleteFile(fileUrl);
     }
     public ResponseEntity<String> deleteLrcFileById(Integer id) {
         Song song = getSongById(id);
-        String fileName = song.getLrcFilename();
-        Path storageDir = Paths.get("songs/lrc");
-        return  FileService.deleteFile(fileName, storageDir);
+        String fileUrl = song.getLyricUrl();
+        return  FileService.deleteFile(fileUrl);
     }
 }

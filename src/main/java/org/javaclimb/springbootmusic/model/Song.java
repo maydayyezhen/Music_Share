@@ -22,8 +22,8 @@ public class Song {
     @JoinColumn(name = "artist_id", referencedColumnName = "id")
     private Artist artist;
     private Integer duration;
-    private String audioFilename;
-    private String lrcFilename;
+    private String audioUrl;
+    private String lyricUrl;
     private String lyrics;
 
 // getters and setters
@@ -57,17 +57,17 @@ public class Song {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
-    public String getAudioFilename() {
-        return audioFilename;
+    public String getAudioUrl() {
+        return audioUrl;
     }
-    public void setAudioFilename(String fileUrl) {
-        this.audioFilename = fileUrl;
+    public void setAudioUrl(String fileUrl) {
+        this.audioUrl = fileUrl;
     }
-    public String getLrcFilename() {
-        return lrcFilename;
+    public String getLyricUrl() {
+        return lyricUrl;
     }
-    public void setLrcFilename(String lrcFilename) {
-        this.lrcFilename = lrcFilename;
+    public void setLyricUrl(String lrcFilename) {
+        this.lyricUrl = lrcFilename;
     }
     public String getLyrics() {
         return lyrics;

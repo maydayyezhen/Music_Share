@@ -2,12 +2,10 @@ package org.javaclimb.springbootmusic.controller;
 
 import org.javaclimb.springbootmusic.model.Album;
 import org.javaclimb.springbootmusic.service.AlbumService;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -33,21 +31,14 @@ public class AlbumController {
         return albumService.getAlbumById(id);
     }
 
-    @GetMapping("/{id}/coverFile")
-    public ResponseEntity<Resource> getCoverFileById(@PathVariable Integer id){
-        return albumService.getCoverFileById(id);
-    }
-
-
-
 
     @PostMapping
     public Album createAlbum(@RequestBody Album album) {
         return albumService.createAlbum(album);
     }
-    @PostMapping("/coverFile")
-    public String uploadCoverFile(@RequestParam("coverFile") MultipartFile coverFile) {
-        return albumService.uploadCoverFile(coverFile);
+    @PostMapping("/{id}/coverFile")
+    public ResponseEntity<Void> uploadCoverFile(@PathVariable Integer id, @RequestParam("coverFile") MultipartFile coverFile) {
+        return albumService.uploadCoverFile(id,coverFile);
     }
 
     @DeleteMapping("/{id}/coverFile")

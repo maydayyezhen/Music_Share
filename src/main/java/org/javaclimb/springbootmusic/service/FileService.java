@@ -1,13 +1,7 @@
 package org.javaclimb.springbootmusic.service;
-
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,8 +10,10 @@ import java.util.Objects;
 
 @Service
 public class FileService {
-    public static String uploadFile(MultipartFile file, Path uploadDir) {
+    public static String uploadFile(MultipartFile file, String uploadPath) {
         String fileName;
+        String fileUrl;
+        Path uploadDir = Path.of(uploadPath);
         if (!Files.exists(uploadDir)) {
             try {
                 Files.createDirectories(uploadDir);
@@ -29,6 +25,7 @@ public class FileService {
         try {
             String timestamp = String.valueOf(System.currentTimeMillis());
             fileName = timestamp + "_" + Objects.requireNonNull(file.getOriginalFilename());
+            fileUrl = uploadPath + fileName;
             Path filePath = uploadDir.resolve(fileName).normalize();
             Files.write(filePath, file.getBytes());
             System.out.println("📤 文件上传成功: " + filePath);
@@ -36,35 +33,12 @@ public class FileService {
             System.err.println("❌ 文件上传失败: " + e.getMessage());
             throw new RuntimeException(e);
         }
-        return fileName;
+        return fileUrl;
     }
 
-    public static ResponseEntity<Resource> getFile(String fileName, Path storageDir){
-        try {
+    public static ResponseEntity<String> deleteFile(String fileUrl) {
 
-
-            Path filePath = storageDir.resolve(fileName).normalize();
-
-            if (!Files.exists(filePath)) {
-                throw new FileNotFoundException("文件未找到: " + fileName);
-            }
-
-            String mimeType = Files.probeContentType(filePath);
-            if (mimeType == null) {
-                mimeType = "application/octet-stream";
-            }
-            System.out.println("📥 文件获取: " + fileName);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(mimeType))
-                    .body(new FileSystemResource(filePath));
-        } catch (IOException e) {
-            throw new RuntimeException("文件访问错误: " + e.getMessage(), e);
-        }
-    }
-
-    public static ResponseEntity<String> deleteFile(String fileName, Path storageDir) {
-
-        Path filePath = storageDir.resolve(fileName).normalize();
+        Path filePath = Path.of(fileUrl);
         try{
             if (Files.exists(filePath)) {
                 Files.delete(filePath);

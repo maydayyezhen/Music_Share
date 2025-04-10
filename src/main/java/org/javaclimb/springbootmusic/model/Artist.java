@@ -14,7 +14,7 @@ public class Artist {
     private Integer id;
     private String name;
     private String bio;
-    private String avatarFilename;
+    private String avatarUrl;
 
     // getters and setters
     public Integer getId() {
@@ -35,10 +35,10 @@ public class Artist {
     public void setBio(String bio) {
         this.bio = bio;
     }
-    public String getAvatarFilename() {
-        return avatarFilename;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
-    public void setAvatarFilename(String avatarUrl) {
-        this.avatarFilename = avatarUrl;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }
