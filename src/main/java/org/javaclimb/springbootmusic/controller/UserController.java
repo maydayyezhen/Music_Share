@@ -21,10 +21,12 @@ public class UserController {
      public List<User> getAllUsers() {
          return userService.getAllUsers();
     }
+
     @GetMapping("/{username}")
-    public User getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    public User getUserByUsername(@PathVariable String username) {
+        return userService.getUserByUsername(username);
     }
+
      @PostMapping
      public User createUser(@RequestBody User user) {
          return userService.createUser(user);

@@ -23,8 +23,12 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
     public User getUserById(Integer id) {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("用户未找到: " + id));
+    }
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public User createUser(User user) {
