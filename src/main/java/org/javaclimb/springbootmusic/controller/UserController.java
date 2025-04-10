@@ -2,6 +2,7 @@ package org.javaclimb.springbootmusic.controller;
 import org.javaclimb.springbootmusic.model.User;
 import org.javaclimb.springbootmusic.service.UserService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,4 +32,17 @@ public class UserController {
      public void deleteUserById(@PathVariable int id) {
          userService.deleteUserById(id);
      }
+    @PutMapping("/{id}/password")
+    public void updatePassword(
+            @PathVariable Integer id,
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword) {
+        userService.updatePassword(id, oldPassword, newPassword);
+    }
+    @PostMapping("/{id}/avatar")
+    public void uploadAvatar(
+            @PathVariable Integer id,
+            @RequestParam("file") MultipartFile file) {
+        userService.uploadAvatar(id, file);
+    }
 }
