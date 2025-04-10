@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final Path rootLocation = Paths.get("uploads/avatars");
+    private final Path rootLocation = Paths.get("users/avatars");
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
