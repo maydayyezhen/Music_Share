@@ -15,7 +15,6 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final Path rootLocation = Paths.get("users/avatars");
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -52,24 +51,8 @@ public class UserService {
     }
 
     // 上传头像
-    public String uploadAvatar(Integer userId, MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new RuntimeException("Failed to store empty file");
-        }
-
-        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        try {
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(filename));
-
-            // 更新用户头像URL
-            userRepository.findById(userId).ifPresent(user -> {
-                user.setAvatarUrl("/avatars/" + filename);
-                userRepository.save(user);
-            });
-
-            return filename;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store file " + filename, e);
-        }
+    public String uploadAvatarFile(MultipartFile avatarFile) {
+        Path uploadDir = Paths.get("users/avatar");
+        return FileService.uploadFile(avatarFile, uploadDir);
     }
 }
