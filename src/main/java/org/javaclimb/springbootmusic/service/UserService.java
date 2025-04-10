@@ -3,14 +3,14 @@ package org.javaclimb.springbootmusic.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.javaclimb.springbootmusic.model.User;
 import org.javaclimb.springbootmusic.repository.UserRepository;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.util.List;
+
+import static org.javaclimb.springbootmusic.constants.FilePaths.USER_AVATAR_PATH;
+import static org.javaclimb.springbootmusic.service.FileService.uploadFile;
 
 
 @Service
@@ -34,7 +34,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // 更新用户信息
     public User updateUser(Integer id, String nickname) {
         User user = getUserById(id);
 
@@ -42,32 +41,22 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // 更新密码
     public User updatePassword(Integer userId, String oldPassword, String newPassword) {
         User user = getUserById(userId);
-
         user.setPassword(newPassword);
         return userRepository.save(user);
     }
 
-    public ResponseEntity<Resource> getAvatarFileByName(Integer id){
+    public ResponseEntity<Void> uploadAvatarFile(Integer id, MultipartFile avatarFile) {
         User user = getUserById(id);
-        String fileName = user.getAvatarUrl();
-        Path storageDir = Paths.get("users/avatar");
-        return FileService.getFile(fileName,storageDir);
+        user.setAvatarUrl(uploadFile(avatarFile, USER_AVATAR_PATH));
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
-
-
-    public String uploadAvatarFile(MultipartFile avatarFile) {
-        Path uploadDir = Paths.get("users/avatar");
-        return FileService.uploadFile(avatarFile, uploadDir);
-    }
-
 
     public ResponseEntity<String> deleteAvatarFileById(Integer id) {
         User user = getUserById(id);
-        String fileName = user.getAvatarUrl();
-        Path storageDir = Paths.get("users/avatar");
-        return FileService.deleteFile(fileName, storageDir);
+        String fileUrl = user.getAvatarUrl();
+        return FileService.deleteFile(fileUrl);
     }
 }
