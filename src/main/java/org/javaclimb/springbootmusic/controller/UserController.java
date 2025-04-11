@@ -25,7 +25,7 @@ public class UserController {
     public User getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
     }
-     @PostMapping
+    @PostMapping
      public User createUser(@RequestBody User user) {
          return userService.createUser(user);
      }
