@@ -59,8 +59,10 @@ public class UserService {
     }
     public ResponseEntity<Void> uploadAvatarFile(String name, MultipartFile avatarFile) {
         User user = getUserByUserName(name);
-        user.setAvatarUrl(uploadFile(avatarFile, USER_AVATAR_PATH));
+        user.setAvatarUrl("http://localhost:8080/"+uploadFile(avatarFile, USER_AVATAR_PATH));
+
         userRepository.save(user);
+
         return ResponseEntity.ok().build();
     }
 
