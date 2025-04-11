@@ -21,40 +21,42 @@ public class UserController {
      public List<User> getAllUsers() {
          return userService.getAllUsers();
     }
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    @GetMapping("/{name}")
+    public User getUserByUserName(@PathVariable String name) {
+        return userService.getUserByUserName(name);
     }
+
      @PostMapping
      public User createUser(@RequestBody User user) {
          return userService.createUser(user);
      }
-     @DeleteMapping("/{id}")
-     public void deleteUserById(@PathVariable Integer id) {
-         userService.deleteUserById(id);
+     @DeleteMapping("/{name}")
+     public void deleteUserById(@PathVariable String name) {
+         userService.deleteUserByUserName(name);
      }
-    @PutMapping("/{id}/password")
+    @PutMapping("/{name}/password")
     public User updatePassword(
-            @PathVariable Integer id,
+            @PathVariable String name,
             @RequestParam String oldPassword,
             @RequestParam String newPassword) {
-        return userService.updatePassword(id, oldPassword, newPassword);
+        return userService.updatePassword(name, oldPassword, newPassword);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{name}")
     public User updateUser(
-            @PathVariable Integer id,
+            @PathVariable String name,
             @RequestParam String nickname) {
-           return userService.updateUser(id, nickname);
+           return userService.updateUser(name, nickname);
     }
 
-    @PostMapping("/{id}/avatarFile")
-    public ResponseEntity<Void> uploadAvatarFile(@PathVariable Integer id, @RequestParam("avatarFile") MultipartFile avatarFile) {
-        return userService.uploadAvatarFile(id,avatarFile);
+    @PostMapping("/{name}/avatarFile")
+    public ResponseEntity<Void> uploadAvatarFile(@PathVariable String name, @RequestParam("avatarFile") MultipartFile avatarFile) {
+        return userService.uploadAvatarFile(name,avatarFile);
     }
 
-    @DeleteMapping("/{id}/avatarFile")
-    public ResponseEntity<String> deleteAvatarFileById(@PathVariable("id") Integer id) {
-        return userService.deleteAvatarFileById(id);
+    @DeleteMapping("/{name}/avatarFile")
+    public ResponseEntity<String> deleteAvatarFileById(@PathVariable String name) {
+        return userService.deleteAvatarFileById(name);
     }
 }
+
