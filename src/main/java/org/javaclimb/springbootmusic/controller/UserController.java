@@ -41,7 +41,13 @@ public class UserController {
             @RequestParam String newPassword) {
         return userService.updatePassword(name, oldPassword, newPassword);
     }
-
+    @PutMapping("/{name}/manage")
+    public void updateRole(
+            @PathVariable String name,
+            @RequestParam String updateName,
+            @RequestParam String role) {
+        userService.updateRole(name, updateName, role);
+    }
     @PutMapping("/{name}")
     public User updateUser(
             @PathVariable String name,
@@ -59,4 +65,3 @@ public class UserController {
         return userService.deleteAvatarFileById(name);
     }
 }
-
