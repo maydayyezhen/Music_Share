@@ -26,6 +26,9 @@ public class UserService {
     public User getUserById(Integer id) {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("用户未找到: " + id));
     }
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 
     public User createUser(User user) {
         return userRepository.save(user);
