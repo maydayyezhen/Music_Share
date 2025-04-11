@@ -47,7 +47,16 @@ public class UserService {
         user.setPassword(newPassword);
         return userRepository.save(user);
     }
-
+    public void updateRole(String name,String upDateName,String role) {
+        User user = getUserByUserName(name);
+        if(user.getRole().trim().equals("admin")){
+            User updateUser =getUserByUserName(upDateName);
+            if(role.trim().equals("admin")||role.trim().equals("user")) {
+                updateUser.setRole(role);
+                userRepository.save(updateUser);
+            }
+        }
+    }
     public ResponseEntity<Void> uploadAvatarFile(String name, MultipartFile avatarFile) {
         User user = getUserByUserName(name);
         user.setAvatarUrl(uploadFile(avatarFile, USER_AVATAR_PATH));
