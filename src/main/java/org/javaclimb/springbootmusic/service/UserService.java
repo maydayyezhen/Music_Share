@@ -59,6 +59,7 @@ public class UserService {
     }
     public ResponseEntity<Void> uploadAvatarFile(String name, MultipartFile avatarFile) {
         User user = getUserByUserName(name);
+
         user.setAvatarUrl("http://localhost:8080/"+uploadFile(avatarFile, USER_AVATAR_PATH));
 
         userRepository.save(user);
@@ -69,6 +70,7 @@ public class UserService {
     public ResponseEntity<String> deleteAvatarFileById(String name) {
         User user = getUserByUserName(name);
         String fileUrl = user.getAvatarUrl();
+        user.setAvatarUrl("");
         return FileService.deleteFile(fileUrl);
     }
 }
