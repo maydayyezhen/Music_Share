@@ -79,4 +79,9 @@ public class SongService {
         String fileUrl = song.getLyricUrl();
         return  FileService.deleteFile(fileUrl);
     }
+
+    public Album getAlbumBySongId(Integer id) {
+        Song song = getSongById(id);
+        return song.getAlbum();
+    }
 }
