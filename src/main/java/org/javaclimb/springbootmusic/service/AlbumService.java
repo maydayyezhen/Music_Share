@@ -33,7 +33,6 @@ public class AlbumService {
     }
 
 
-
     public Album createAlbum(Album album) {
         return albumRepository.save(album);
     }
@@ -44,6 +43,14 @@ public class AlbumService {
         return ResponseEntity.ok().build();
     }
 
+
+    public Album updateAlbum(Album album) {
+        return albumRepository.save(album);
+    }
+
+    public void deleteAlbumById(Integer id) {
+        albumRepository.deleteById(id);
+    }
 
     public ResponseEntity<String> deleteCoverFileById(Integer id) {
         Album album = getAlbumById(id);

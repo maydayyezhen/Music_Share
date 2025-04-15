@@ -33,6 +33,10 @@ public class ArtistService {
         return artistRepository.save(artist);
     }
 
+    public Artist updateArtist(Artist artist) {
+        return artistRepository.save(artist);
+    }
+
     public ResponseEntity<Void> uploadAvatarFile(Integer id, MultipartFile avatarFile) {
         Artist artist = getArtistById(id);
         artist.setAvatarUrl(uploadFile(avatarFile, ARTIST_AVATAR_PATH));
@@ -40,7 +44,9 @@ public class ArtistService {
         return ResponseEntity.ok().build();
     }
 
-
+    public void deleteArtistById(Integer id) {
+        artistRepository.deleteById(id);
+    }
     public ResponseEntity<String> deleteAvatarFileById(Integer id) {
         Artist artist = getArtistById(id);
         String fileUrl = artist.getAvatarUrl();

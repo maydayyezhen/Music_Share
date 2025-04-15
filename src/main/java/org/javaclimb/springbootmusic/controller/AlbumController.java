@@ -1,7 +1,9 @@
 package org.javaclimb.springbootmusic.controller;
 
 import org.javaclimb.springbootmusic.model.Album;
+import org.javaclimb.springbootmusic.model.Song;
 import org.javaclimb.springbootmusic.service.AlbumService;
+import org.javaclimb.springbootmusic.service.SongService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,9 +15,10 @@ import java.util.List;
 @CrossOrigin("*")
 public class AlbumController {
     private final AlbumService albumService;
-
-    public AlbumController(AlbumService albumService) {
+    private final SongService songService;
+    public AlbumController(AlbumService albumService, SongService songService) {
         this.albumService = albumService;
+        this.songService = songService;
     }
     @GetMapping
     public List<Album> getAllAlbums() {
@@ -26,11 +29,23 @@ public class AlbumController {
         return albumService.getAlbumsByArtistId(artistId);
     }
 
+    @GetMapping("/song/{songId}")
+    public Album getAlbumBySongId(@PathVariable Integer songId) {
+        Song song = songService.getSongById(songId);
+        Album album = song.getAlbum();
+        Integer albumId = album.getId();
+        return albumService.getAlbumById(albumId);
+    }
+
     @GetMapping("/{id}")
     public Album getAlbumsByAlbumId(@PathVariable Integer id) {
         return albumService.getAlbumById(id);
     }
 
+    @PutMapping
+    public Album updateAlbum(@RequestBody Album album) {
+        return albumService.updateAlbum(album);
+    }
 
     @PostMapping
     public Album createAlbum(@RequestBody Album album) {
@@ -39,6 +54,18 @@ public class AlbumController {
     @PostMapping("/{id}/coverFile")
     public ResponseEntity<Void> uploadCoverFile(@PathVariable Integer id, @RequestParam("coverFile") MultipartFile coverFile) {
         return albumService.uploadCoverFile(id,coverFile);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteAlbumById(@PathVariable Integer id) {
+        List<Song> songs = songService.getSongsByAlbumId(id);
+        for (Song song : songs) {
+            Integer sid = song.getId();
+            songService.deleteAudioFileById(sid);
+            songService.deleteLrcFileById(sid);
+            songService.deleteSongById(sid);
+        }
+        albumService.deleteAlbumById(id);
     }
 
     @DeleteMapping("/{id}/coverFile")
