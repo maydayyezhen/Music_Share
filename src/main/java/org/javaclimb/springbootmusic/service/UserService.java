@@ -68,6 +68,7 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
+
     public ResponseEntity<String> deleteAvatarFileById(String name) {
         User user = getUserByUserName(name);
         String fileUrl = user.getAvatarUrl();
