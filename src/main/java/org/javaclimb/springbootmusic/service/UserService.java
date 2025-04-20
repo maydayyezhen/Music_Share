@@ -61,17 +61,17 @@ public class UserService {
     public ResponseEntity<Void> uploadAvatarFile(String name, MultipartFile avatarFile) {
         User user = getUserByUserName(name);
 
-        user.setAvatarUrl(PORT_PATH+uploadFile(avatarFile, USER_AVATAR_PATH));
+        user.setAvatarUrl(PORT_PATH + uploadFile(avatarFile, USER_AVATAR_PATH));
 
         userRepository.save(user);
 
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<String> deleteAvatarFileById(String name) {
+    public ResponseEntity<String> deleteAvatarFileByPath(String name , String path) {
         User user = getUserByUserName(name);
-        String fileUrl = user.getAvatarUrl();
         user.setAvatarUrl("");
-        return FileService.deleteFile(fileUrl);
+        userRepository.save(user);
+        return FileService.deleteFile(path);
     }
 }
