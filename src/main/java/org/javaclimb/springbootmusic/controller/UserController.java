@@ -61,7 +61,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{name}/avatarFile")
-    public ResponseEntity<String> deleteAvatarFileById(@PathVariable String name) {
-        return userService.deleteAvatarFileById(name);
+    public ResponseEntity<String> deleteAvatarFileByPath(@PathVariable String name,@RequestParam String path) {
+
+        return userService.deleteAvatarFileByPath(name,path);
     }
 }
