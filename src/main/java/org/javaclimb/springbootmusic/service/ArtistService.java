@@ -39,8 +39,13 @@ public class ArtistService {
 
     public ResponseEntity<Void> uploadAvatarFile(Integer id, MultipartFile avatarFile) {
         Artist artist = getArtistById(id);
+        String oldAvatarUrl = artist.getAvatarUrl();
         artist.setAvatarUrl(uploadFile(avatarFile, ARTIST_AVATAR_PATH));
         artistRepository.save(artist);
+        // 删除旧的文件
+        if (oldAvatarUrl != null&& !oldAvatarUrl.isEmpty()) {
+            FileService.deleteFile(oldAvatarUrl);
+        }
         return ResponseEntity.ok().build();
     }
 

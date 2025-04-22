@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static org.javaclimb.springbootmusic.constants.FilePaths.PORT_PATH;
 import static org.javaclimb.springbootmusic.constants.FilePaths.USER_AVATAR_PATH;
 import static org.javaclimb.springbootmusic.service.FileService.uploadFile;
 
@@ -42,7 +43,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
     public User updatePassword(String name, String oldPassword, String newPassword) {
         User user = getUserByUserName(name);
         user.setPassword(newPassword);
@@ -61,13 +61,12 @@ public class UserService {
     public ResponseEntity<Void> uploadAvatarFile(String name, MultipartFile avatarFile) {
         User user = getUserByUserName(name);
 
-        user.setAvatarUrl("http://localhost:8080/"+uploadFile(avatarFile, USER_AVATAR_PATH));
+        user.setAvatarUrl(PORT_PATH+uploadFile(avatarFile, USER_AVATAR_PATH));
 
         userRepository.save(user);
 
         return ResponseEntity.ok().build();
     }
-
 
     public ResponseEntity<String> deleteAvatarFileById(String name) {
         User user = getUserByUserName(name);
