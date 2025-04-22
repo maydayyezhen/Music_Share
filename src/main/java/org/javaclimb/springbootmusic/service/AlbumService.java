@@ -42,6 +42,7 @@ public class AlbumService {
         album.setCoverUrl(uploadFile(coverFile,ALBUM_COVER_PATH));
         albumRepository.save(album);
         if (oldCoverUrl != null && !oldCoverUrl.isEmpty()) {//
+
             FileService.deleteFile(oldCoverUrl);           //删除旧文件
         }                                                  //
         return ResponseEntity.ok().build();
