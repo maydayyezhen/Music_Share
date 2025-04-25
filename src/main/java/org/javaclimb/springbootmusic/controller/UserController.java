@@ -1,5 +1,5 @@
 package org.javaclimb.springbootmusic.controller;
-import org.javaclimb.springbootmusic.model.User;
+import org.javaclimb.springbootmusic.model.UserEntity;
 import org.javaclimb.springbootmusic.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +18,16 @@ public class UserController {
     }
 
     @GetMapping
-     public List<User> getAllUsers() {
+     public List<UserEntity> getAllUsers() {
          return userService.getAllUsers();
     }
     @GetMapping("/{name}")
-    public User getUserByUserName(@PathVariable String name) {
+    public UserEntity getUserByUserName(@PathVariable String name) {
         return userService.getUserByUserName(name);
     }
 
      @PostMapping
-     public User createUser(@RequestBody User user) {
+     public UserEntity createUser(@RequestBody UserEntity user) {
          return userService.createUser(user);
      }
      @DeleteMapping("/{name}")
@@ -35,7 +35,7 @@ public class UserController {
          userService.deleteUserByUserName(name);
      }
     @PutMapping("/{name}/password")
-    public User updatePassword(
+    public UserEntity updatePassword(
             @PathVariable String name,
             @RequestParam String oldPassword,
             @RequestParam String newPassword) {
@@ -49,10 +49,21 @@ public class UserController {
         userService.updateRole(name, updateName, role);
     }
     @PutMapping("/{name}")
-    public User updateUser(
+    public UserEntity updateUser(
             @PathVariable String name,
             @RequestParam String nickname) {
            return userService.updateUser(name, nickname);
+    }
+
+    //注册
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestParam String name, @RequestParam String password) {
+        return userService.register(name, password);
+    }
+    //登录
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestParam String name, @RequestParam String password) {
+        return userService.login(name, password);
     }
 
     @PostMapping("/{name}/avatarFile")
