@@ -1,5 +1,7 @@
 package org.javaclimb.springbootmusic.controller;
-import org.javaclimb.springbootmusic.model.User;
+import org.javaclimb.springbootmusic.model.LoginRequest;
+import org.javaclimb.springbootmusic.security.AuthResponse;
+import org.javaclimb.springbootmusic.model.UserDetails;
 import org.javaclimb.springbootmusic.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,45 +20,67 @@ public class UserController {
     }
 
     @GetMapping
-     public List<User> getAllUsers() {
+     public List<UserDetails> getAllUsers() {
          return userService.getAllUsers();
     }
-
-    @GetMapping("/{username}")
-    public User getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username);
+    @GetMapping("/{name}")
+    public UserDetails getUserByUserName(@PathVariable String name) {
+        return userService.getUserByUserName(name);
     }
 
      @PostMapping
-     public User createUser(@RequestBody User user) {
+     public UserDetails createUser(@RequestBody UserDetails user) {
          return userService.createUser(user);
      }
-     @DeleteMapping("/{id}")
-     public void deleteUserById(@PathVariable int id) {
-         userService.deleteUserById(id);
+     @DeleteMapping("/{name}")
+     public void deleteUserById(@PathVariable String name) {
+         userService.deleteUserByUserName(name);
      }
-    @PutMapping("/{id}/password")
-    public User updatePassword(
-            @PathVariable Integer id,
+    @PutMapping("/{name}/password")
+    public UserDetails updatePassword(
+            @PathVariable String name,
             @RequestParam String oldPassword,
             @RequestParam String newPassword) {
-        return userService.updatePassword(id, oldPassword, newPassword);
+        return userService.updatePassword(name, oldPassword, newPassword);
     }
-
-    @PutMapping("/{id}")
-    public User updateUser(
-            @PathVariable Integer id,
+    @PutMapping("/{name}/manage")
+    public void updateRole(
+            @PathVariable String name,
+            @RequestParam String updateName,
+            @RequestParam String role) {
+        userService.updateRole(name, updateName, role);
+    }
+    @PutMapping("/{name}")
+    public UserDetails updateUser(
+            @PathVariable String name,
             @RequestParam String nickname) {
-           return userService.updateUser(id, nickname);
+           return userService.updateUser(name, nickname);
     }
 
-    @PostMapping("/{id}/avatarFile")
-    public ResponseEntity<Void> uploadAvatarFile(@PathVariable Integer id, @RequestParam("avatarFile") MultipartFile avatarFile) {
-        return userService.uploadAvatarFile(id,avatarFile);
+    //注册
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestParam String name, @RequestParam String password) {
+        return userService.register(name, password);
+    }
+    //登录
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
-    @DeleteMapping("/{id}/avatarFile")
-    public ResponseEntity<String> deleteAvatarFileById(@PathVariable("id") Integer id) {
-        return userService.deleteAvatarFileById(id);
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+        return userService.logout(authHeader);
+    }
+
+
+    @PostMapping("/{name}/avatarFile")
+    public ResponseEntity<Void> uploadAvatarFile(@PathVariable String name, @RequestParam("avatarFile") MultipartFile avatarFile) {
+        return userService.uploadAvatarFile(name,avatarFile);
+    }
+
+    @DeleteMapping("/{name}/avatarFile")
+    public ResponseEntity<String> deleteAvatarFileById(@PathVariable String name) {
+        return userService.deleteAvatarFileById(name);
     }
 }

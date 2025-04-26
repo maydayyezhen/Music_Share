@@ -49,15 +49,25 @@ public class SongService {
 
     public ResponseEntity<Void> uploadAudioFile(Integer id ,MultipartFile audioFile) {
         Song song = getSongById(id);
+        String oldAudioUrl = song.getAudioUrl();
         song.setAudioUrl(uploadFile(audioFile, SONG_AUDIO_PATH));
         songRepository.save(song);
+        // 删除旧的音频文件
+        if (oldAudioUrl != null&&!oldAudioUrl.isEmpty()) {
+            FileService.deleteFile(oldAudioUrl);
+        }
         return ResponseEntity.ok().build();
     }
 
     public ResponseEntity<Void> uploadLrcFile(Integer id, MultipartFile lrcFile) {
         Song song = getSongById(id);
+        String oldLrcUrl = song.getLyricUrl();
         song.setLyricUrl(uploadFile(lrcFile, SONG_LYRIC_PATH));
         songRepository.save(song);
+        // 删除旧的歌词文件
+        if (oldLrcUrl != null&&!oldLrcUrl.isEmpty()) {
+            FileService.deleteFile(oldLrcUrl);
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -78,5 +88,10 @@ public class SongService {
         Song song = getSongById(id);
         String fileUrl = song.getLyricUrl();
         return  FileService.deleteFile(fileUrl);
+    }
+
+    public Album getAlbumBySongId(Integer id) {
+        Song song = getSongById(id);
+        return song.getAlbum();
     }
 }

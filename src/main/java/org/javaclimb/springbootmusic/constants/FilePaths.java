@@ -2,7 +2,8 @@ package org.javaclimb.springbootmusic.constants;
 
 public class FilePaths {
     public static final String UPLOAD_PATH = "upload/";  // 基础上传路径
-
+    public static final String PORT_PATH = "http://localhost:8080/";//端口号
+    
     public static final String SONGS_PATH = UPLOAD_PATH + "songs/";  // 歌曲上传路径
     public static final String ALBUMS_PATH = UPLOAD_PATH + "albums/";  // 专辑上传路径
     public static final String ARTISTS_PATH = UPLOAD_PATH + "artists/";  // 歌手上传路径

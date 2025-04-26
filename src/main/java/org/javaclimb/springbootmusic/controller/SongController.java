@@ -1,4 +1,5 @@
 package org.javaclimb.springbootmusic.controller;
+import org.javaclimb.springbootmusic.model.Album;
 import org.javaclimb.springbootmusic.model.Song;
 import org.javaclimb.springbootmusic.service.SongService;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,11 @@ public class SongController {
     @GetMapping("/{id}/coverUrl")
     public String getCoverUrlBySongId(@PathVariable Integer id){
         return songService.getCoverUrlBySongId(id);
+    }
+
+    @GetMapping("/{id}/album")
+    public Album getAlbumBySongId(@PathVariable Integer id) {
+        return songService.getAlbumBySongId(id);
     }
 
     @GetMapping("/album/{albumId}")

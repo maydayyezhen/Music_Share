@@ -33,17 +33,28 @@ public class AlbumService {
     }
 
 
-
     public Album createAlbum(Album album) {
         return albumRepository.save(album);
     }
     public ResponseEntity<Void> uploadCoverFile(Integer id,MultipartFile coverFile) {
         Album album = getAlbumById(id);
+        String oldCoverUrl = album.getCoverUrl();//获取旧封面URL
         album.setCoverUrl(uploadFile(coverFile,ALBUM_COVER_PATH));
         albumRepository.save(album);
+        if (oldCoverUrl != null && !oldCoverUrl.isEmpty()) {//
+            FileService.deleteFile(oldCoverUrl);           //删除旧文件
+        }                                                  //
         return ResponseEntity.ok().build();
     }
 
+
+    public Album updateAlbum(Album album) {
+        return albumRepository.save(album);
+    }
+
+    public void deleteAlbumById(Integer id) {
+        albumRepository.deleteById(id);
+    }
 
     public ResponseEntity<String> deleteCoverFileById(Integer id) {
         Album album = getAlbumById(id);
