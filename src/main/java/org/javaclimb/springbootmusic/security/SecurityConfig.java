@@ -1,5 +1,6 @@
 package org.javaclimb.springbootmusic.security;
 
+import org.javaclimb.springbootmusic.service.BlacklistedTokenService;
 import org.javaclimb.springbootmusic.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -11,9 +12,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,10 +29,14 @@ import java.util.List;
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtUtil jwtUtil;
+    private final BlacklistedTokenService blacklistedTokenService;
 
     @Autowired
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil, BlacklistedTokenService blacklistedTokenService) {
         this.customUserDetailsService = customUserDetailsService;
+        this.jwtUtil = jwtUtil;
+        this.blacklistedTokenService = blacklistedTokenService;
     }
 
     @Bean
@@ -51,37 +58,57 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session ->
-                        session
-                                .invalidSessionUrl("/login")  // 会话无效时跳转到登录页
-                                .maximumSessions(1)  // 限制每个用户最多有一个 session
-                                .expiredUrl("/login")  // 会话过期时跳转到登录页
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/users/register","/status/logout-success", "/status/dashboard").permitAll()
+                        .requestMatchers("/users/login", "/users/register").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                                .defaultSuccessUrl("/status/login-success", true)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // 关键
                 )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/status/logout-success")
-                )
-                .rememberMe(rememberMe -> rememberMe
-                        .userDetailsService(customUserDetailsService)
-                        .tokenValiditySeconds(20)
-                        .key("remember-me")
-                );
-
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, customUserDetailsService,blacklistedTokenService),
+                        UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-    @Bean
-    public ServletWebServerFactory servletContainer() {
-        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        factory.addContextCustomizers(context -> context.setSessionTimeout(20));
-        return factory;
-    }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .sessionManagement(session ->
+//                        session
+//                                .invalidSessionUrl("/login")  // 会话无效时跳转到登录页
+//                                .maximumSessions(1)  // 限制每个用户最多有一个 session
+//                                .expiredUrl("/login")  // 会话过期时跳转到登录页
+//                )
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/login", "/users/register","/status/logout-success", "/status/dashboard").permitAll()
+//                        .anyRequest().authenticated()
+//                )
+//                .formLogin(form -> form
+//                                .defaultSuccessUrl("/status/login-success", true)
+//                )
+//                .logout(logout -> logout
+//                        .logoutSuccessUrl("/status/logout-success")
+//                )
+//                .rememberMe(rememberMe -> rememberMe
+//                        .userDetailsService(customUserDetailsService)
+//                        .tokenValiditySeconds(20)
+//                        .key("remember-me")
+//                );
+//
+//        return http.build();
+//    }
+//    @Bean
+//    public ServletWebServerFactory servletContainer() {
+//        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+//        factory.addContextCustomizers(context -> context.setSessionTimeout(20));
+//        return factory;
+//    }
 
     // CORS 配置源
     @Bean

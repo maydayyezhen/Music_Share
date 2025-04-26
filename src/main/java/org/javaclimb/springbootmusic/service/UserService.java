@@ -1,7 +1,9 @@
 package org.javaclimb.springbootmusic.service;
 
-import org.javaclimb.springbootmusic.model.UserEntity;
+import org.javaclimb.springbootmusic.security.AuthResponse;
+import org.javaclimb.springbootmusic.model.UserDetails;
 import org.javaclimb.springbootmusic.repository.UserRepository;
+import org.javaclimb.springbootmusic.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,45 +21,49 @@ import static org.javaclimb.springbootmusic.service.FileService.uploadFile;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BlacklistedTokenService blacklistedTokenService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, BlacklistedTokenService blacklistedTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.blacklistedTokenService = blacklistedTokenService;
     }
 
 
-    public List<UserEntity> getAllUsers() {
+    public List<UserDetails> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public UserEntity getUserByUserName(String name) {
+    public UserDetails getUserByUserName(String name) {
         return userRepository.findByUsername(name);
     }
 
-    public UserEntity createUser(UserEntity user) {
+    public UserDetails createUser(UserDetails user) {
         return userRepository.save(user);
     }
     public void deleteUserByUserName(String name) {
         userRepository.delete(getUserByUserName(name));
     }
 
-    public UserEntity updateUser(String name, String nickname) {
-        UserEntity user = getUserByUserName(name);
+    public UserDetails updateUser(String name, String nickname) {
+        UserDetails user = getUserByUserName(name);
 
         user.setNickname(nickname);
         return userRepository.save(user);
     }
 
-    public UserEntity updatePassword(String name, String oldPassword, String newPassword) {
-        UserEntity user = getUserByUserName(name);
+    public UserDetails updatePassword(String name, String oldPassword, String newPassword) {
+        UserDetails user = getUserByUserName(name);
         user.setPassword(newPassword);
         return userRepository.save(user);
     }
     public void updateRole(String name,String upDateName,String role) {
-        UserEntity user = getUserByUserName(name);
+        UserDetails user = getUserByUserName(name);
         if(user.getRole().trim().equals("admin")){
-            UserEntity updateUser =getUserByUserName(upDateName);
+            UserDetails updateUser =getUserByUserName(upDateName);
             if(role.trim().equals("admin")||role.trim().equals("user")) {
                 updateUser.setRole(role);
                 userRepository.save(updateUser);
@@ -65,7 +71,7 @@ public class UserService {
         }
     }
     public ResponseEntity<Void> uploadAvatarFile(String name, MultipartFile avatarFile) {
-        UserEntity user = getUserByUserName(name);
+        UserDetails user = getUserByUserName(name);
 
         user.setAvatarUrl(PORT_PATH+uploadFile(avatarFile, USER_AVATAR_PATH));
 
@@ -75,28 +81,31 @@ public class UserService {
     }
 
     public ResponseEntity<String> deleteAvatarFileById(String name) {
-        UserEntity user = getUserByUserName(name);
+        UserDetails user = getUserByUserName(name);
         String fileUrl = user.getAvatarUrl();
         user.setAvatarUrl("");
         return FileService.deleteFile(fileUrl);
     }
 
-    public ResponseEntity<String> login(String name, String password) {
+    public ResponseEntity<AuthResponse> login(String name, String password) {
+
         if (name == null || name.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("用户名不能为空");
+            return ResponseEntity.badRequest().body(new AuthResponse("用户名不能为空"));
         }
         if (password == null || password.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("密码不能为空");
+            return ResponseEntity.badRequest().body(new AuthResponse("密码不能为空"));
         }
         if (!userRepository.existsByUsername(name)) {
-            return ResponseEntity.badRequest().body("该用户名不存在");
+            return ResponseEntity.badRequest().body(new AuthResponse("该用户名不存在"));
         }
-        UserEntity user = userRepository.findByUsername(name);
+        UserDetails user = userRepository.findByUsername(name);
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ResponseEntity.badRequest().body("密码错误");
+            return ResponseEntity.badRequest().body(new AuthResponse("密码错误"));
         }
-        return ResponseEntity.ok("登录成功");
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        return ResponseEntity.ok(new AuthResponse(token));
     }
+
     //注册
     public ResponseEntity<String> register(String name, String password) {
         if (name == null || name.trim().isEmpty()) {
@@ -109,7 +118,7 @@ public class UserService {
             return ResponseEntity.badRequest().body("该用户名已被注册");
         }
         String encodedPassword = passwordEncoder.encode(password);
-        UserEntity user = new UserEntity();
+        UserDetails user = new UserDetails();
         user.setUsername(name);
         user.setPassword(encodedPassword);
         user.setRole("user");
@@ -118,4 +127,9 @@ public class UserService {
         return ResponseEntity.ok("注册成功");
     }
 
+    public ResponseEntity<String> logout(String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        blacklistedTokenService.blacklistToken(token);
+        return ResponseEntity.ok("退出成功");
+    }
 }

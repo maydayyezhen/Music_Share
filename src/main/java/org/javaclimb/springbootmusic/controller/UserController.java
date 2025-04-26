@@ -1,5 +1,7 @@
 package org.javaclimb.springbootmusic.controller;
-import org.javaclimb.springbootmusic.model.UserEntity;
+import org.javaclimb.springbootmusic.model.LoginRequest;
+import org.javaclimb.springbootmusic.security.AuthResponse;
+import org.javaclimb.springbootmusic.model.UserDetails;
 import org.javaclimb.springbootmusic.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +20,16 @@ public class UserController {
     }
 
     @GetMapping
-     public List<UserEntity> getAllUsers() {
+     public List<UserDetails> getAllUsers() {
          return userService.getAllUsers();
     }
     @GetMapping("/{name}")
-    public UserEntity getUserByUserName(@PathVariable String name) {
+    public UserDetails getUserByUserName(@PathVariable String name) {
         return userService.getUserByUserName(name);
     }
 
      @PostMapping
-     public UserEntity createUser(@RequestBody UserEntity user) {
+     public UserDetails createUser(@RequestBody UserDetails user) {
          return userService.createUser(user);
      }
      @DeleteMapping("/{name}")
@@ -35,7 +37,7 @@ public class UserController {
          userService.deleteUserByUserName(name);
      }
     @PutMapping("/{name}/password")
-    public UserEntity updatePassword(
+    public UserDetails updatePassword(
             @PathVariable String name,
             @RequestParam String oldPassword,
             @RequestParam String newPassword) {
@@ -49,7 +51,7 @@ public class UserController {
         userService.updateRole(name, updateName, role);
     }
     @PutMapping("/{name}")
-    public UserEntity updateUser(
+    public UserDetails updateUser(
             @PathVariable String name,
             @RequestParam String nickname) {
            return userService.updateUser(name, nickname);
@@ -62,9 +64,15 @@ public class UserController {
     }
     //登录
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String name, @RequestParam String password) {
-        return userService.login(name, password);
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest.getUsername(), loginRequest.getPassword());
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+        return userService.logout(authHeader);
+    }
+
 
     @PostMapping("/{name}/avatarFile")
     public ResponseEntity<Void> uploadAvatarFile(@PathVariable String name, @RequestParam("avatarFile") MultipartFile avatarFile) {
