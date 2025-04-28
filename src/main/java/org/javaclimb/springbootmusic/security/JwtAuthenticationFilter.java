@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.javaclimb.springbootmusic.service.BlacklistedTokenService;
 import org.javaclimb.springbootmusic.service.CustomUserDetailsService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,21 +29,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@Nullable HttpServletRequest request,
                                     @Nullable HttpServletResponse response,
                                     @Nullable FilterChain filterChain) throws ServletException, IOException {
+
+        String uri = null;
+        if (request != null) {
+            uri = request.getRequestURI();
+        }
+        // 直接放行不需要JWT校验的路径
+        if ("/users/login".equals(uri) || "/users/register".equals(uri)) {
+            if (filterChain != null) {
+                filterChain.doFilter(request, response);
+            }
+            return;
+        }
         // 从请求中获取 JWT Token
         String token = null;
         if (request != null) {
             token = getJwtFromRequest(request);
         }
         // 如果 Token 存在并且有效
-        if (token != null && jwtUtil.validateToken(token) && !blacklistedTokenService.isTokenBlacklisted(token)) {
-            String username = jwtUtil.getUsername(token);
-            // 使用 CustomUserDetailsService 根据用户名加载用户信息
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-            // 创建认证对象，传递用户信息
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            // 将认证信息存入 SecurityContext
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            if (token != null && jwtUtil.validateToken(token) && !blacklistedTokenService.isTokenBlacklisted(token)) {
+                String username = jwtUtil.getUsername(token);
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                throw new BadCredentialsException("Token missing or invalid");
+            }
+        } catch (BadCredentialsException e) {
+            // 直接拦截响应
+            if (response != null) {
+                response.setContentType("application/json;charset=UTF-8");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\": \"Token missing or invalid\"}");
+            }
+            return;
         }
         // 继续处理请求
         if (filterChain != null) {
@@ -52,11 +74,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");  // 获取 Authorization 头部
+        String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);  // 去掉 "Bearer " 前缀，返回剩下的 Token
+            return bearerToken.substring(7);
         }
-        return null;  // 如果没有 Bearer Token，返回 null
+        return null;
     }
 
 }

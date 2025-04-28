@@ -22,11 +22,10 @@ public class JwtUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username) {
         try {
             return Jwts
                     .builder()
-                    .claim("role", role)
                     .setSubject(username)
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis() + validityInMilliseconds))
@@ -54,15 +53,6 @@ public class JwtUtil {
                 .getBody();
 
         return claims.getSubject();
-    }
-    public String getRole(String token) {
-        Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.get("role").toString();
     }
 
     public Date getExpirationDate(String token) {

@@ -1,7 +1,7 @@
 package org.javaclimb.springbootmusic.service;
 
+import org.javaclimb.springbootmusic.model.User;
 import org.javaclimb.springbootmusic.security.AuthResponse;
-import org.javaclimb.springbootmusic.model.UserDetails;
 import org.javaclimb.springbootmusic.repository.UserRepository;
 import org.javaclimb.springbootmusic.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,37 +33,37 @@ public class UserService {
     }
 
 
-    public List<UserDetails> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public UserDetails getUserByUserName(String name) {
+    public User getUserByUserName(String name) {
         return userRepository.findByUsername(name);
     }
 
-    public UserDetails createUser(UserDetails user) {
+    public User createUser(User user) {
         return userRepository.save(user);
     }
     public void deleteUserByUserName(String name) {
         userRepository.delete(getUserByUserName(name));
     }
 
-    public UserDetails updateUser(String name, String nickname) {
-        UserDetails user = getUserByUserName(name);
+    public User updateUser(String name, String nickname) {
+        User user = getUserByUserName(name);
 
         user.setNickname(nickname);
         return userRepository.save(user);
     }
 
-    public UserDetails updatePassword(String name, String oldPassword, String newPassword) {
-        UserDetails user = getUserByUserName(name);
+    public User updatePassword(String name, String oldPassword, String newPassword) {
+        User user = getUserByUserName(name);
         user.setPassword(newPassword);
         return userRepository.save(user);
     }
     public void updateRole(String name,String upDateName,String role) {
-        UserDetails user = getUserByUserName(name);
+        User user = getUserByUserName(name);
         if(user.getRole().trim().equals("admin")){
-            UserDetails updateUser =getUserByUserName(upDateName);
+            User updateUser =getUserByUserName(upDateName);
             if(role.trim().equals("admin")||role.trim().equals("user")) {
                 updateUser.setRole(role);
                 userRepository.save(updateUser);
@@ -71,7 +71,7 @@ public class UserService {
         }
     }
     public ResponseEntity<Void> uploadAvatarFile(String name, MultipartFile avatarFile) {
-        UserDetails user = getUserByUserName(name);
+        User user = getUserByUserName(name);
 
         user.setAvatarUrl(PORT_PATH+uploadFile(avatarFile, USER_AVATAR_PATH));
 
@@ -81,7 +81,7 @@ public class UserService {
     }
 
     public ResponseEntity<String> deleteAvatarFileById(String name) {
-        UserDetails user = getUserByUserName(name);
+        User user = getUserByUserName(name);
         String fileUrl = user.getAvatarUrl();
         user.setAvatarUrl("");
         return FileService.deleteFile(fileUrl);
@@ -98,11 +98,11 @@ public class UserService {
         if (!userRepository.existsByUsername(name)) {
             return ResponseEntity.badRequest().body(new AuthResponse("该用户名不存在"));
         }
-        UserDetails user = userRepository.findByUsername(name);
+        User user = userRepository.findByUsername(name);
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.badRequest().body(new AuthResponse("密码错误"));
         }
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = jwtUtil.generateToken(user.getUsername());
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
@@ -118,7 +118,7 @@ public class UserService {
             return ResponseEntity.badRequest().body("该用户名已被注册");
         }
         String encodedPassword = passwordEncoder.encode(password);
-        UserDetails user = new UserDetails();
+        User user = new User();
         user.setUsername(name);
         user.setPassword(encodedPassword);
         user.setRole("user");
@@ -131,5 +131,10 @@ public class UserService {
         String token = authHeader.replace("Bearer ", "");
         blacklistedTokenService.blacklistToken(token);
         return ResponseEntity.ok("退出成功");
+    }
+
+    public User getUserByToken(String token) {
+        String username = jwtUtil.getUsername(token);
+        return userRepository.findByUsername(username);
     }
 }

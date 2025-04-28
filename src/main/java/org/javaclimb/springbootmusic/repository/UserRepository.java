@@ -1,11 +1,9 @@
 package org.javaclimb.springbootmusic.repository;
+import org.javaclimb.springbootmusic.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.javaclimb.springbootmusic.model.UserDetails;
 
-public interface UserRepository extends JpaRepository<UserDetails, Integer>{
+public interface UserRepository extends JpaRepository<User, Integer>{
 
-    UserDetails findByUsername(String username);
+    User findByUsername(String username);
     boolean existsByUsername(String username);
-
-    UserDetails findByUsernameAndPassword(String name, String password);
 }

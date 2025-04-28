@@ -1,7 +1,7 @@
 package org.javaclimb.springbootmusic.service;
-import org.javaclimb.springbootmusic.model.UserDetails;
-import org.springframework.security.core.userdetails.User;
+import org.javaclimb.springbootmusic.model.User;
 import org.javaclimb.springbootmusic.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -16,15 +16,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 从数据库查找用户
-        UserDetails user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
         String role = user.getRole().toUpperCase();
-        // 返回 UserDetails 实现类
-        return User.builder()
+        // 返回 User 实现类
+        return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .roles(role)

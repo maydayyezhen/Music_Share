@@ -3,14 +3,12 @@ package org.javaclimb.springbootmusic.security;
 import org.javaclimb.springbootmusic.service.BlacklistedTokenService;
 import org.javaclimb.springbootmusic.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity(jsr250Enabled = true)
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -65,50 +63,10 @@ public class SecurityConfig {
                         .requestMatchers("/users/login", "/users/register").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // 关键
-                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, customUserDetailsService,blacklistedTokenService),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .sessionManagement(session ->
-//                        session
-//                                .invalidSessionUrl("/login")  // 会话无效时跳转到登录页
-//                                .maximumSessions(1)  // 限制每个用户最多有一个 session
-//                                .expiredUrl("/login")  // 会话过期时跳转到登录页
-//                )
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/login", "/users/register","/status/logout-success", "/status/dashboard").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin(form -> form
-//                                .defaultSuccessUrl("/status/login-success", true)
-//                )
-//                .logout(logout -> logout
-//                        .logoutSuccessUrl("/status/logout-success")
-//                )
-//                .rememberMe(rememberMe -> rememberMe
-//                        .userDetailsService(customUserDetailsService)
-//                        .tokenValiditySeconds(20)
-//                        .key("remember-me")
-//                );
-//
-//        return http.build();
-//    }
-//    @Bean
-//    public ServletWebServerFactory servletContainer() {
-//        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-//        factory.addContextCustomizers(context -> context.setSessionTimeout(20));
-//        return factory;
-//    }
 
     // CORS 配置源
     @Bean

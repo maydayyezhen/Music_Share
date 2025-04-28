@@ -3,6 +3,7 @@ import org.javaclimb.springbootmusic.model.Album;
 import org.javaclimb.springbootmusic.model.Song;
 import org.javaclimb.springbootmusic.service.SongService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -18,6 +19,8 @@ public class SongController {
     public SongController(SongService songService) {
         this.songService = songService;
     }
+
+    // 查询类接口，公开访问
     @GetMapping
     public List<Song> getAllSongs() {
         return songService.getAllSongs();
@@ -28,7 +31,6 @@ public class SongController {
         return songService.getSongById(id);
     }
 
-    //根据歌手ID获取歌曲
     @GetMapping("/artist/{artistId}")
     public List<Song> getSongsByArtistId(@PathVariable Integer artistId) {
         return songService.getSongsByArtistId(artistId);
@@ -49,36 +51,47 @@ public class SongController {
         return songService.getSongsByAlbumId(albumId);
     }
 
+    // 写操作，需要管理员权限
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public Song addSong(@RequestBody Song song) {return songService.addSong(song);}
-    //歌曲上传
-    @PostMapping("/{id}/audioFile")
-    public ResponseEntity<Void> uploadAudioFile(@PathVariable Integer id, @RequestParam("audioFile") MultipartFile audioFile) {
-        return songService.uploadAudioFile(id,audioFile);
-    }
-    //歌词上传
-    @PostMapping("/{id}/lrcFile")
-    public ResponseEntity<Void> uploadLrcFile(@PathVariable Integer id, @RequestParam("lrcFile") MultipartFile lrcFile) {
-        return songService.uploadLrcFile(id,lrcFile);
+    public Song addSong(@RequestBody Song song) {
+        return songService.addSong(song);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{id}/audioFile")
+    public ResponseEntity<Void> uploadAudioFile(@PathVariable Integer id, @RequestParam("audioFile") MultipartFile audioFile) {
+        return songService.uploadAudioFile(id, audioFile);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{id}/lrcFile")
+    public ResponseEntity<Void> uploadLrcFile(@PathVariable Integer id, @RequestParam("lrcFile") MultipartFile lrcFile) {
+        return songService.uploadLrcFile(id, lrcFile);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     public Song updateSong(@RequestBody Song song) {
         return songService.updateSong(song);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteSongById(@PathVariable Integer id) {
         songService.deleteSongById(id);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/audioFile")
-    public ResponseEntity<String> deleteAudioFileById(@PathVariable("id") Integer id) {
+    public ResponseEntity<String> deleteAudioFileById(@PathVariable Integer id) {
         return songService.deleteAudioFileById(id);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/lrcFile")
-    public ResponseEntity<String> deleteLrcFileById(@PathVariable("id") Integer id) {
+    public ResponseEntity<String> deleteLrcFileById(@PathVariable Integer id) {
         return songService.deleteLrcFileById(id);
     }
-
 }
+

@@ -4,6 +4,7 @@ import org.javaclimb.springbootmusic.model.BlacklistedToken;
 import org.javaclimb.springbootmusic.repository.BlacklistedTokenRepository;
 import org.javaclimb.springbootmusic.security.JwtUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -27,6 +28,7 @@ public class BlacklistedTokenService {
         return blacklistedTokenRepository.existsByToken(token);
     }
 
+    @Transactional
     public void cleanupExpiredTokens() {
         blacklistedTokenRepository.deleteAllByExpirationDateBefore(new Date());
     }
