@@ -3,6 +3,9 @@ package org.javaclimb.springbootmusic.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.javaclimb.springbootmusic.model.Artist;
 import org.javaclimb.springbootmusic.repository.ArtistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,6 +59,22 @@ public class ArtistService {
         Artist artist = getArtistById(id);
         String fileUrl = artist.getAvatarUrl();
         return FileService.deleteFile(fileUrl);
+    }
+
+    public Page<Artist> getPagedArtists(int page, int size, String keyword, String sortBy, String sortOrder) {
+        // 构造排序规则
+        Sort sort = Sort.unsorted();
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sort = Sort.by("desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        if (keyword == null || keyword.isEmpty()) {
+            return artistRepository.findAll(pageRequest);
+        } else {
+            return artistRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
+        }
     }
 
 }
