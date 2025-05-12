@@ -19,6 +19,7 @@ public class Album {
     private String coverUrl;
     private String description;
     private String releaseDate;
+    private Integer likeCount;
 
 // getters and setters
     public Integer getId() {
@@ -56,6 +57,12 @@ public class Album {
     }
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
     }
 }
 

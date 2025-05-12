@@ -2,7 +2,11 @@ package org.javaclimb.springbootmusic.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.javaclimb.springbootmusic.model.Album;
+import org.javaclimb.springbootmusic.model.Artist;
 import org.javaclimb.springbootmusic.repository.AlbumRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,8 +33,9 @@ public class AlbumService {
     }
 
     public List<Album> getAlbumsByArtistId(Integer artistId) {
-        return albumRepository.findByArtistId(artistId);
+        return albumRepository.findByArtistIdOrderByReleaseDateDesc(artistId);
     }
+
 
 
     public Album createAlbum(Album album) {
@@ -60,5 +65,21 @@ public class AlbumService {
         Album album = getAlbumById(id);
         String fileUrl = album.getCoverUrl();
         return FileService.deleteFile(fileUrl);
+    }
+
+    public Page<Album> getPagedAlbums(int page, int size, String keyword, String sortBy, String sortOrder) {
+        // 构造排序规则
+        Sort sort = Sort.unsorted();
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sort = Sort.by("desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        if (keyword == null || keyword.isEmpty()) {
+            return albumRepository.findAll(pageRequest);
+        } else {
+            return albumRepository.findByTitleContainingIgnoreCase(keyword, pageRequest);
+        }
     }
 }

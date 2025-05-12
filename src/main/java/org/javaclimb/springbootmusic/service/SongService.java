@@ -4,6 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.javaclimb.springbootmusic.model.Album;
 import org.javaclimb.springbootmusic.model.Song;
 import org.javaclimb.springbootmusic.repository.SongRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +34,7 @@ public class SongService {
     }
 
     public List<Song> getSongsByAlbumId(Integer albumId) {
-        return songRepository.findByAlbumId(albumId);
+        return songRepository.findByAlbumIdOrderByTrackNum(albumId);
     }
 
     public String getCoverUrlBySongId(Integer id) {
@@ -93,5 +96,21 @@ public class SongService {
     public Album getAlbumBySongId(Integer id) {
         Song song = getSongById(id);
         return song.getAlbum();
+    }
+
+    public Page<Song> getPagedSongs(int page, int size, String keyword, String sortBy, String sortOrder) {
+        // 构造排序规则
+        Sort sort = Sort.unsorted();
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sort = Sort.by("desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        if (keyword == null || keyword.isEmpty()) {
+            return songRepository.findAll(pageRequest);
+        } else {
+            return songRepository.findByTitleContainingIgnoreCase(keyword, pageRequest);
+        }
     }
 }

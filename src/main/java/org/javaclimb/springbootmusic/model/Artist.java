@@ -15,6 +15,7 @@ public class Artist {
     private String name;
     private String bio;
     private String avatarUrl;
+    private Integer likeCount;
 
     // getters and setters
     public Integer getId() {
@@ -40,5 +41,11 @@ public class Artist {
     }
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
     }
 }

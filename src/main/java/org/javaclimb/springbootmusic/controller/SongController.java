@@ -2,6 +2,7 @@ package org.javaclimb.springbootmusic.controller;
 import org.javaclimb.springbootmusic.model.Album;
 import org.javaclimb.springbootmusic.model.Song;
 import org.javaclimb.springbootmusic.service.SongService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,16 @@ public class SongController {
     @GetMapping
     public List<Song> getAllSongs() {
         return songService.getAllSongs();
+    }
+
+    @GetMapping("/paged")
+    public Page<Song> getPagedSongs(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder) {
+        return songService.getPagedSongs(page, size, keyword, sortBy, sortOrder);
     }
 
     @GetMapping("/{id}")

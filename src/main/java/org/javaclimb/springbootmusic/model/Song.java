@@ -25,6 +25,8 @@ public class Song {
     private String audioUrl;
     private String lyricUrl;
     private String lyrics;
+    private Integer trackNum;
+    private Integer likeCount;
 
 // getters and setters
     public Integer getId() {
@@ -74,5 +76,17 @@ public class Song {
     }
     public void setLyrics(String lyrics) {
         this.lyrics = lyrics;
+    }
+    public Integer getTrackNum() {
+        return trackNum;
+    }
+    public void setTrackNum(Integer trackNum) {
+        this.trackNum = trackNum;
+    }
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
     }
 }
