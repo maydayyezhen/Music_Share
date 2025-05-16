@@ -33,6 +33,9 @@ public class ArtistService {
 
 
     public Artist createArtist(Artist artist) {
+        if (artist.getLikeCount() == null) {
+            artist.setLikeCount(0);
+        }
         return artistRepository.save(artist);
     }
 

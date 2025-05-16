@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
@@ -47,6 +48,9 @@ public class SongService {
     }
 
     public Song addSong(Song song) {
+        if (song.getLikeCount() == null) {
+            song.setLikeCount(0);
+        }
         return songRepository.save(song);
     }
 
@@ -74,9 +78,25 @@ public class SongService {
         return ResponseEntity.ok().build();
     }
 
+    @Transactional
     public Song updateSong(Song song) {
-        return songRepository.save(song);
+        Song original = songRepository.findById(song.getId())
+                .orElseThrow(() -> new RuntimeException("歌曲不存在"));
+
+        if (song.getTitle() != null) original.setTitle(song.getTitle());
+        if (song.getAlbum() != null) original.setAlbum(song.getAlbum());
+        if (song.getArtist() != null) original.setArtist(song.getArtist());
+
+        if (song.getDuration() != null) original.setDuration(song.getDuration());
+        if (song.getAudioUrl() != null) original.setAudioUrl(song.getAudioUrl());
+        if (song.getLyrics() != null) original.setLyrics(song.getLyrics());
+        if (song.getLyricUrl() != null) original.setLyricUrl(song.getLyricUrl());
+        if (song.getTrackNum() != null) original.setTrackNum(song.getTrackNum());
+        if (song.getLikeCount() != null) original.setLikeCount(song.getLikeCount());
+
+        return songRepository.save(original);
     }
+
 
     public void deleteSongById(Integer id) {
         songRepository.deleteById(id);

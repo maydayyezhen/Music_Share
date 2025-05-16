@@ -39,6 +39,9 @@ public class AlbumService {
 
 
     public Album createAlbum(Album album) {
+        if (album.getLikeCount() == null) {
+            album.setLikeCount(0);
+        }
         return albumRepository.save(album);
     }
     public ResponseEntity<Void> uploadCoverFile(Integer id,MultipartFile coverFile) {
@@ -54,8 +57,18 @@ public class AlbumService {
 
 
     public Album updateAlbum(Album album) {
-        return albumRepository.save(album);
+        Album original = albumRepository.findById(album.getId())
+                .orElseThrow(() -> new RuntimeException("Album not found"));
+
+        if (album.getTitle() != null) original.setTitle(album.getTitle());
+        if (album.getDescription() != null) original.setDescription(album.getDescription());
+        if (album.getCoverUrl() != null) original.setCoverUrl(album.getCoverUrl());
+        if (album.getReleaseDate() != null) original.setReleaseDate(album.getReleaseDate());
+        if (album.getArtist() != null) original.setArtist(album.getArtist());
+
+        return albumRepository.save(original);
     }
+
 
     public void deleteAlbumById(Integer id) {
         albumRepository.deleteById(id);
