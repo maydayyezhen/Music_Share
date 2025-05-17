@@ -55,11 +55,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updatePassword(String name, String oldPassword, String newPassword) {
-        User user = getUserByUserName(name);
-        user.setPassword(newPassword);
+    public User updatePassword(String username, String oldPassword, String newPassword) {
+        User user = getUserByUserName(username);
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new IllegalArgumentException("旧密码错误");
+        }
+
+        // 加密新密码再保存
+        user.setPassword(passwordEncoder.encode(newPassword));
         return userRepository.save(user);
     }
+
     public void updateRole(String name,String upDateName,String role) {
         User user = getUserByUserName(name);
         if(user.getRole().trim().equals("admin")){
