@@ -3,6 +3,8 @@ package org.javaclimb.springbootmusic.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,7 +31,7 @@ public class Playlist {
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
-    private Set<Song> songs;
+    private Set<Song> songs= new HashSet<>();
 
     // getters and setters
     public Integer getId() {
