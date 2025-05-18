@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 import static org.javaclimb.springbootmusic.constants.FilePaths.PLAYLIST_COVER_PATH;
 import static org.javaclimb.springbootmusic.service.FileService.uploadFile;
 import static org.javaclimb.springbootmusic.service.FileService.deleteFile;
@@ -87,16 +88,21 @@ public class PlaylistService {
 
         return ResponseEntity.ok().build();
     }
-
+    @Transactional
     public Playlist addSongToPlaylist(Integer playlistId, Integer songId) {
         Playlist playlist = getPlaylistById(playlistId);
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new EntityNotFoundException("歌曲未找到: " + songId));
 
+        // 添加双向关联
         playlist.getSongs().add(song);
+        song.getPlaylists().add(playlist);
+
+        // 保存两边
+        songRepository.save(song);
         return playlistRepository.save(playlist);
     }
-
+    @Transactional
     public Playlist removeSongFromPlaylist(Integer playlistId, Integer songId) {
         Playlist playlist = getPlaylistById(playlistId);
         Song song = songRepository.findById(songId)
@@ -149,4 +155,5 @@ public class PlaylistService {
             return playlistRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
         }
     }
+
 }
