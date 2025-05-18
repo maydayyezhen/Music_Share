@@ -1,5 +1,6 @@
 package org.javaclimb.springbootmusic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -31,16 +32,6 @@ public class Song {
     private Integer trackNum;
     private Integer likeCount;
 
-    public Set<Playlist> getPlaylists() {
-        return playlists;
-    }
-
-    public void setPlaylists(Set<Playlist> playlists) {
-        this.playlists = playlists;
-    }
-
-    @ManyToMany(mappedBy = "songs")
-    private Set<Playlist> playlists = new HashSet<>();
 // getters and setters
     public Integer getId() {
         return id;
@@ -103,3 +94,4 @@ public class Song {
         this.likeCount = likeCount;
     }
 }
+
