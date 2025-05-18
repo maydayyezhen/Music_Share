@@ -93,13 +93,9 @@ public class PlaylistService {
         Playlist playlist = getPlaylistById(playlistId);
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new EntityNotFoundException("歌曲未找到: " + songId));
-
-        // 添加双向关联
+        
         playlist.getSongs().add(song);
-        song.getPlaylists().add(playlist);
 
-        // 保存两边
-        songRepository.save(song);
         return playlistRepository.save(playlist);
     }
     @Transactional
