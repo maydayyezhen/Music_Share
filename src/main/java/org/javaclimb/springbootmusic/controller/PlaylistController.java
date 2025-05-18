@@ -53,6 +53,7 @@ public class PlaylistController {
         return playlistService.getSongsByPlaylistId(id);
     }
 
+
     // 写操作，需要管理员权限
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -65,6 +66,7 @@ public class PlaylistController {
     public ResponseEntity<Void> uploadCoverImage(@PathVariable Integer id, @RequestParam("coverImage") MultipartFile coverImage) {
         return playlistService.uploadCoverImage(id, coverImage);
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{playlistId}/songs/{songId}")
