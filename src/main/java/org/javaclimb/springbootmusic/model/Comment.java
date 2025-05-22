@@ -25,6 +25,12 @@ public class Comment {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
+<<<<<<< HEAD
+=======
+    @Column(name = "parent_comment_id", nullable = false)
+    private Long parentCommentId;
+
+>>>>>>> 7312840 (comment)
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
@@ -62,6 +68,16 @@ public class Comment {
         this.contentId = contentId;
     }
 
+<<<<<<< HEAD
+=======
+    public Long getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
+>>>>>>> 7312840 (comment)
     public String getContent() {
         return content;
     }

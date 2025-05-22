@@ -14,6 +14,21 @@ public class CommentResponse {
     private Date createdAt;
     private Integer likeCount; // 点赞数
     private Boolean liked; // 当前用户是否点赞
+<<<<<<< HEAD
+=======
+
+    private Long parentCommentId;
+
+    public Long getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
+
+
+>>>>>>> 7312840 (comment)
     
     // Getters and Setters
     public Long getId() {

@@ -35,6 +35,10 @@ public class CommentServiceImpl implements CommentService {
         comment.setContentType(request.getContentType());
         comment.setContentId(request.getContentId());
         comment.setContent(request.getContent());
+<<<<<<< HEAD
+=======
+        comment.setParentCommentId(request.getParentCommentId());
+>>>>>>> 7312840 (comment)
         comment.setCreatedAt(new Date());
         
         return commentRepository.save(comment);
@@ -143,6 +147,10 @@ public class CommentServiceImpl implements CommentService {
             response.setContentId(comment.getContentId());
             response.setContent(comment.getContent());
             response.setCreatedAt(comment.getCreatedAt());
+<<<<<<< HEAD
+=======
+            response.setParentCommentId(comment.getParentCommentId());
+>>>>>>> 7312840 (comment)
             
             // 设置点赞数
             Long likeCount = likeCountMap.getOrDefault(comment.getId(), 0L);

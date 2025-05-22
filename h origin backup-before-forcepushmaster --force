@@ -1,0 +1,84 @@
+[33m9555a5b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mbackup-before-forcepush[m[33m)[m Update FilePaths.java
+[33ma7b852d[m Update Playlist.java
+[33m393600e[m Update Song.java
+[33m5902ccc[m Update PlaylistService.java
+[33mb124e90[m Update PlaylistController.java
+[33m7bb4b18[m Update PlaylistService.java
+[33m4151fdd[m Update Song.java
+[33ma19aaf7[m Update PlaylistController.java
+[33m6aac5f4[m Merge remote-tracking branch 'origin/master'
+[33meb7c142[m 更新密码后加密
+[33mc108d37[m 更新密码后加密
+[33m625cb0e[m 更新密码后加密
+[33mc580c04[m Rename PlaylistService to PlaylistService.java
+[33m1d8c97e[m Create PlaylistRepository.java
+[33mbaa8f7b[m Rename PlaylistController to PlaylistController.java
+[33me09bfa5[m Rename Playlist to Playlist.java
+[33m7d24339[m Create Playlist
+[33m7aa037c[m Create PlaylistController
+[33mcc790de[m Create PlaylistService
+[33mc29b5b5[m 小更改
+[33m1e7cfcf[m 小更改
+[33m7eef9df[m Merge remote-tracking branch 'origin/master'
+[33m77f9428[m 收藏功能
+[33m031184e[m 查询功能增加
+[33md71fe29[m Add all files
+[33mc4d436c[m “change”
+[33me3f3924[m 新增登录安全管理和权限认证
+[33m0fd88db[m Merge remote-tracking branch 'origin/master'
+[33m1379919[m 新增登录安全管理和权限认证
+[33m8f72115[m Merge branch 'test'
+[33m3593845[m 保存状态
+[33m02d95a0[m 保存状态
+[33mf3cbc01[m 文件删除逻辑修正
+[33m769010b[m 文件删除逻辑修正
+[33m0d674ad[m 文件删除逻辑修正
+[33m32984f1[m 文件删除逻辑修正
+[33m08b2d26[m Update UserService.java
+[33m27852ce[m Update UserController.java
+[33mc2e063c[m Update UserService.java
+[33m6b434bb[m Update FilePaths.java
+[33m1d4c95b[m 对各个模块做出了一定的整合
+[33me2d819c[m 对各个模块做出了一定的整合
+[33m67fcf35[m 对各个模块做出了一定的整合
+[33m7d55b49[m 歌手、专辑、歌曲界面的编辑功能
+[33mbdcb1c8[m Update UserService.java
+[33m79a2d0e[m Update UserService.java
+[33m8d8754a[m Update UserController.java
+[33mce12b43[m Update UserService.java
+[33m4748c78[m solve merge conflicts
+[33m8f66e78[m 1
+[33mf0465f7[m 歌手专辑歌曲界面开发用
+[33m7169ea7[m Update UserController.java
+[33mf762e19[m Update UserService.java
+[33ma201c20[m 修改了getUserByName的错误
+[33md147d83[m Update UserController.java
+[33m4e22c9a[m 对user的文件操作进行了更改，使其与其他部分统一
+[33mc87eac6[m 更改了文件上传和访问的逻辑，对一些变量进行了重命名
+[33mce4fae0[m Merge remote-tracking branch 'origin/master'
+[33m298f396[m 更改了文件上传和访问的逻辑，对一些变量进行了重命名
+[33mf354905[m Update UserController.java
+[33m2f6d4d1[m Update UserService.java
+[33mc42dfd5[m Update UserController.java
+[33mb3a82f2[m Update UserService.java
+[33m4c3fd95[m Update UserService.java
+[33m4f4c4a5[m Update UserService.java
+[33m18a92cb[m Delete src/main/java/org/javaclimb/springbootmusic/WebConfig.java
+[33mbe23d29[m Update WebConfig.java
+[33m6a3fbe4[m Delete src/main/java/org/javaclimb/springbootmusic/User.java
+[33m3f4bbfd[m Update User.java
+[33m489b5da[m Delete src/main/java/org/javaclimb/springbootmusic/UserController.java
+[33mfb08f37[m Update UserController.java
+[33m4e18737[m Delete src/main/java/org/javaclimb/springbootmusic/UserRepository.java
+[33m2db60a7[m Update UserRepository.java
+[33m240ac01[m Delete src/main/java/org/javaclimb/springbootmusic/UserService.java
+[33me8e7ddc[m Update UserService.java
+[33m1fb66cb[m User类新加了头像属性
+[33m6c25ccc[m Merge remote-tracking branch 'origin/master'
+[33m75fc317[m 修改了song，添加了lrcFile的接口,从而实现了歌词滚动
+[33ma4c7ec7[m 实现了专辑界面的展示
+[33m9fe6255[m 实现了歌手界面
+[33mad0b695[m 对原有代码进行了整理，使其更加模块化，更清晰
+[33m664f107[m 对原有代码进行了整理，使其更加模块化，更清晰
+[33me2cb18e[m 实现了文件的上传和提取
+[33mf24c079[m 222
